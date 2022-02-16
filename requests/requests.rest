@@ -1,0 +1,22 @@
+# Get all persons
+GET http://localhost:3001/api/persons
+
+###
+# Get person by id
+GET http://localhost:3001/api/persons/1
+
+###
+# Delete person by id
+DELETE http://localhost:3001/api/persons/1
+
+###
+# Create person
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Mary Poppendieck",
+  "number": "39-23-6423122"
+}
+
+
