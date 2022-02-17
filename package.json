@@ -8,9 +8,10 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Cristhian Benitez",
+  "author": "Cristhian E Benitez",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "morgan": "^1.10.0"
   },
