@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -19,7 +20,6 @@ app.use(
 );
 app.use(cors());
 app.use(express.static('build'));
-
 let persons = [
   {
     id: 1,
