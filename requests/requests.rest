@@ -3,7 +3,7 @@ GET http://localhost:3001/api/persons
 
 ###
 # Get person by id
-GET http://localhost:3001/api/persons/1
+GET http://localhost:3001/api/persons/620fb3ef0cf960295256487c
 
 ###
 # Delete person by id
