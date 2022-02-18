@@ -3,8 +3,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
-
+// Middleware orders matters
 app.use(express.json());
+app.use(express.static('build'));
+app.use(cors());
 app.use(
   morgan((tokens, req, res) => {
     return [
@@ -19,38 +21,8 @@ app.use(
     ].join(' ');
   })
 );
-app.use(cors());
-app.use(express.static('build'));
 
 const Person = require('./models/person');
-
-// let persons = [
-//   {
-//     id: 1,
-//     name: 'Arto Hellas',
-//     number: '040-123456'
-//   },
-//   {
-//     id: 2,
-//     name: 'Ada Lovelace',
-//     number: '39-44-5323523'
-//   },
-//   {
-//     id: 3,
-//     name: 'Dan Abramov',
-//     number: '12-43-234345'
-//   },
-//   {
-//     id: 4,
-//     name: 'Mary Poppendieck',
-//     number: '39-23-6423122'
-//   }
-// ];
-
-const generateId = () => {
-  const maxId = persons.length > 0 ? Math.floor(Math.random() * 1000000) : 0;
-  return maxId + 1;
-};
 
 app.get('/info', (request, response) => {
   const message = `
@@ -64,11 +36,11 @@ app.post('/api/persons', (request, response) => {
   const { name, number } = request.body;
   // const hasDuplicatedName = Boolean(persons.find((p) => p.name === name));
 
-  // if (!name || !number) {
-  //   return response.status(400).json({
-  //     error: 'The name or number is missing'
-  //   });
-  // }
+  if (!name || !number) {
+    return response.status(400).json({
+      error: 'The name or number is missing'
+    });
+  }
   // if (hasDuplicatedName) {
   //   return response.status(400).json({
   //     error: 'The name already exists in the phonebook'
@@ -89,19 +61,59 @@ app.get('/api/persons', (request, response) => {
   });
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  // const id = Number(request.params.id);
-  Person.findById(request.params.id).then((person) => {
-    response.json(person);
-  });
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+app.use(errorHandler);
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body;
+
+  const person = {
+    name,
+    number
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
+    })
+    .catch((error) => next(error));
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((p) => p.id !== id);
-
-  response.status(204).end();
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
+const nonExistentPerson = (error, request, response, next) => {
+  if (error.name === 'CastError') {
+    return response
+      .status(400)
+      .send({ error: 'a person with that id do not exist' });
+  }
+  next(error);
+};
+app.use(nonExistentPerson);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
