@@ -310,3 +310,11 @@ If an HTTP POST request tries to add a name that is already in the phonebook, th
 Generate a new "full stack" version of the application by creating a new production build of the frontend, and copy it to the backend repository. Verify that everything works locally by using the entire application from the address <http://localhost:3001/>.
 
 Push the latest version to Heroku and verify that everything works there as well.
+
+# Exercise 3.22
+
+## 3.22: Lint configuration
+
+Add ESlint to your application and fix all the warnings.
+
+This was the last exercise of this part of the course. It's time to push your code to GitHub and mark all of your finished exercises to the exercise submission system.
