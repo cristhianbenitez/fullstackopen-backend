@@ -3,7 +3,7 @@ GET http://localhost:3001/api/persons
 
 ###
 # Get person by id
-GET http://localhost:3001/api/persons/620fccea8f9045c4b0f31992
+GET http://localhost:3001/api/persons/620fccaea8f9045c4b0f31992
 
 ###
 # Delete person by id
@@ -15,7 +15,7 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
  {
-   "name": "Jane Dight",
+   "name": "Jabaea",
     "number": "754-769-0568"
   }
 

@@ -265,3 +265,48 @@ Also update the handling of the api/persons/:id and info routes to use the datab
 Inspecting an individual phonebook entry from the browser should look like this:
 
 ![fullstack content](https://fullstackopen.com/static/853a1d57372a2b5c8fc1249b682d59a7/5a190/49.png)
+
+# Exercises 3.19.-3.21
+
+## 3.19*: Phonebook database, step7
+
+Expand the validation so that the name stored in the database has to be at least three characters long.
+
+Expand the frontend so that it displays some form of error message when a validation error occurs. Error handling can be implemented by adding a catch block as shown below:
+
+``` javascript
+personService
+    .create({ ... })
+    .then(createdPerson => {
+      // ...
+    })
+    .catch(error => {
+      // this is the way to access the error message
+      console.log(error.response.data)
+    })
+```
+
+You can display the default error message returned by Mongoose, even though they are not as readable as they could be:
+
+![fullstack content](https://fullstackopen.com/static/fddf847e340f060549c3029f464a5493/5a190/56e.png)
+
+>NB: On update operations, mongoose validators are off by default. Read the documentation to determine how to enable them.
+
+## 3.20*: Phonebook database, step8
+
+Add validation to your phonebook application, that will make sure that phone numbers are of the correct form. A phone number must
+
+has length of 8 or more
+if formed of two parts that are separated by -, the first part has two or three numbers and the second part also consists of numbers
+
+eg. 09-1234556 and 040-22334455 are valid phone numbers
+eg. 1234556, 1-22334455 and 10-22-334455 are invalid
+Use a Custom validatior to implement the second part of the validation.
+
+If an HTTP POST request tries to add a name that is already in the phonebook, the server must respond with an appropriate status code and error message.
+
+## 3.21 Deploying the database backend to production
+
+Generate a new "full stack" version of the application by creating a new production build of the frontend, and copy it to the backend repository. Verify that everything works locally by using the entire application from the address <http://localhost:3001/>.
+
+Push the latest version to Heroku and verify that everything works there as well.

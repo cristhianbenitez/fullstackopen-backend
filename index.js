@@ -25,33 +25,41 @@ app.use(
 const Person = require('./models/person');
 
 app.get('/info', (request, response) => {
-  const message = `
+  Person.find({}).then((persons) => {
+    const message = `
   <p>Phonebook has info for ${persons.length} people</p>
   <p>${new Date()}</p>
   `;
-  response.send(message);
+    response.send(message);
+  });
 });
 
-app.post('/api/persons', (request, response) => {
-  const { name, number } = request.body;
-  // const hasDuplicatedName = Boolean(persons.find((p) => p.name === name));
+app.post('/api/persons', (request, response, next) => {
+  Person.find({}).then((persons) => {
+    const { name, number } = request.body;
+    const hasDuplicatedName = Boolean(persons.find((p) => p.name === name));
 
-  if (!name || !number) {
-    return response.status(400).json({
-      error: 'The name or number is missing'
+    if (!name || !number) {
+      return response.status(400).json({
+        error: 'The name or number is missing'
+      });
+    }
+    if (hasDuplicatedName) {
+      return response.status(400).json({
+        error: 'The name already exists in the phonebook'
+      });
+    }
+
+    const person = new Person({
+      name,
+      number
     });
-  }
-  // if (hasDuplicatedName) {
-  //   return response.status(400).json({
-  //     error: 'The name already exists in the phonebook'
-  //   });
-  // }
-  const person = new Person({
-    name,
-    number
-  });
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
+    person
+      .save()
+      .then((savedPerson) => {
+        response.json(savedPerson);
+      })
+      .catch((error) => next(error));
   });
 });
 
@@ -72,16 +80,6 @@ app.get('/api/persons/:id', (request, response, next) => {
     })
     .catch((error) => next(error));
 });
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' });
-  }
-
-  next(error);
-};
-app.use(errorHandler);
 
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body;
@@ -90,8 +88,13 @@ app.put('/api/persons/:id', (request, response, next) => {
     name,
     number
   };
+  const options = {
+    new: true,
+    runValidators: true,
+    context: 'query'
+  };
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, options)
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
@@ -105,15 +108,25 @@ app.delete('/api/persons/:id', (request, response, next) => {
     })
     .catch((error) => next(error));
 });
-const nonExistentPerson = (error, request, response, next) => {
-  if (error.name === 'CastError') {
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
+const errorHandler = (error, request, response, next) => {
+  console.log(error.errors);
+  if (error.name === 'CastError' && error.kind == 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
     return response
       .status(400)
-      .send({ error: 'a person with that id do not exist' });
+      .json({ error: error.errors[('name', 'number')].message });
   }
+
   next(error);
 };
-app.use(nonExistentPerson);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
