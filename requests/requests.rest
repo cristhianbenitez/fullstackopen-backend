@@ -1,0 +1,29 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Essay Writing 101",
+  "author": "Cristhian Benitez",
+  "url": "essaywriting.com/",
+  "likes": "101"
+}
+
+
+
+###
+
+GET http://localhost:3003/api/blogs
+
+
+###
+
+
+PUT http://localhost:3003/api/blogs
+
+
+
+###
+
+
+
+DELETE http://localhost:3003/api/blogs
