@@ -1,4 +1,4 @@
-# [LIVE DEMO](https://openfullstack-persons.herokuapp.com/)
+# [LIVE DEMO](https://phonebook-fullstackk.herokuapp.com/)
 
 # Exercises 3.1.-3.6
 
