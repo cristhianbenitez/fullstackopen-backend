@@ -12,18 +12,22 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3003/api/blogs
+GET http://localhost:3003/api/blogs/621671c01bc68c8ae8c7c6db
 
 
 ###
 
 
-PUT http://localhost:3003/api/blogs
+PUT http://localhost:3003/api/blogs/621671c01bc68c8ae8c7c6db
+Content-Type: application/json
 
+{
+  "title": "Essaaay aaag 101",
+  "author": "Craaaistaaaitez",
+  "url": "essaating.com/",
+  "likes": "101"
+}
 
 
 ###
-
-
-
-DELETE http://localhost:3003/api/blogs
+DELETE http://localhost:3003/api/blogs/6210fa553386e07092b52b22
