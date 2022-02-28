@@ -1,0 +1,17 @@
+###
+#                   USERS API REQUESTS
+#
+#                   GET ALL USERS
+GET http://localhost:3003/api/users
+#
+###
+#
+#                   POST NEW USER
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "cris0987",
+    "name": "Cristhian Benitez",
+    "password": "123456"
+}

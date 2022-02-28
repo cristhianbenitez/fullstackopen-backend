@@ -1,17 +1,20 @@
+// Blogs
 const Blog = require('../models/blog');
 
 const initialBlogs = [
   {
-    title: 'Essay Writing 101',
+    title: 'Blog 1',
     author: 'Cristhian Benitez',
     url: 'essaywriting.com/',
-    likes: 101
+    likes: 101,
+    user: '621cfa391d298e1f29b06731'
   },
   {
-    title: 'Essay Writing 101',
+    title: 'Blog 2 ',
     author: 'Cristhian Benitez',
     url: 'essaywriting.com/',
-    likes: 101
+    likes: 101,
+    user: '621cfa391d298e1f29b06731'
   }
 ];
 
@@ -34,8 +37,17 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+// Users
+const User = require('../models/user');
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
 module.exports = {
   initialBlogs,
   nonExistingId,
-  blogsInDb
+  blogsInDb,
+  usersInDb
 };

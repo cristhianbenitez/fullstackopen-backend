@@ -1,0 +1,58 @@
+#                    BLOGS API REQUESTS
+#
+#                  POST NEW BLOG
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Essaay Wraadasaiting 101",
+  "author": "Cristhaaaian Benitez",
+  "url": "essaywraaating.com/",
+  "likes": "101",
+  "userId":"6217ee71a3b1849bd1e34886"
+}
+
+#
+###
+#     POST NEW BLOG WITH AUTHORIZATION
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNyaXMwOTg3IiwiaWQiOiI2MjE4ZTg3NjA0ZDIxZjZkOWEwNWUzMmUiLCJpYXQiOjE2NDYwNTYwOTQsImV4cCI6MTY0NjA1OTY5NH0.27di_eBPwSmLI8UT95LcO9qvo4qO4cXnWzBO2NxlCKA
+
+{
+  "title": "aaaaa",
+  "author": "aaaaa",
+  "url": "essaywraaating.com/",
+  "likes": 101
+}
+
+
+###
+#
+#            GET SPECIFIC BLOG
+GET http://localhost:3003/api/blogs/621cd2ca7cb97174f66f5e62
+#
+#
+###
+#
+#              GET ALL BLOGS
+GET http://localhost:3003/api/blogs
+#
+#
+###             UPDATE BLOG
+PUT http://localhost:3003/api/blogs/621671c01bc68c8ae8c7c6db
+Content-Type: application/json
+{
+  "title": "Essaaay aaag 101",
+  "author": "Craaaistaaaitez",
+  "url": "essaating.com/",
+  "likes": "101"
+}
+###
+#
+#                DELETE BLOG
+DELETE http://localhost:3003/api/blogs/621923db87a7a4193720bc64
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNyaXMwOTg3IiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2NDYwNjIyNjN9.JUhBM1OwDLE8ZNFRvIJtOzQjXvM0OLI2yl7BqlGrID4
+
+#
+#

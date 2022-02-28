@@ -1,4 +1,3 @@
-const { expect } = require('@jest/globals');
 const listHelper = require('../utils/list_helper');
 
 describe('total likes', () => {
@@ -83,6 +82,16 @@ describe('amount of blogs', () => {
     expect(result).toEqual({
       author: 'Robert C. Martin',
       blogs: 3
+    });
+  });
+});
+
+describe('amount of likes ', () => {
+  test('author with the largest amount of likes', () => {
+    const result = listHelper.mostLikes(blogs);
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 12
     });
   });
 });

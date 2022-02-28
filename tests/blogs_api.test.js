@@ -1,10 +1,24 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcrypt');
+
 const app = require('../app');
 const helper = require('./test_helper');
+const Blog = require('../models/blog');
+const User = require('../models/user');
+
 const api = supertest(app);
 
-const Blog = require('../models/blog');
+// login to get the token before starting the test
+let token;
+beforeEach(async () => {
+  const loginDetails = await api
+    .post('/api/login')
+    .send({ username: 'cris0987', password: '123456' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+  token = loginDetails.body.token;
+});
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
@@ -57,22 +71,26 @@ describe('viewing a specific note', () => {
 
 describe('addition of a blog', () => {
   test('succeed with valid data', async () => {
+    const blogsAtStart = await helper.blogsInDb();
     const newBlog = {
-      title: 'Essay Wridasdasting 101',
-      author: 'Cristasdashian Baaadenitez',
-      url: 'essaywriaaating.com/'
+      title: 'Blog 3',
+      author: ' Baaadenitez',
+      url: 'essaywriaaating.com/',
+      likes: 120
     };
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const response = await api.get('/api/blogs');
-    const likes = response.body.map((b) => b.likes);
+    const blogsAtEnd = await helper.blogsInDb();
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+    const likes = await blogsAtEnd.map((b) => b.likes);
+
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
 
     likes.forEach((like) => {
       expect(like).toBeGreaterThanOrEqual(0);
@@ -86,8 +104,10 @@ describe('addition of a blog', () => {
       url: 'essaywriaaating.com/',
       likes: 12231
     };
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/);
@@ -97,13 +117,16 @@ describe('addition of a blog', () => {
 describe('deletion of blog', () => {
   test('succeed with status 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb();
-    const blogToDelete = blogsAtStart[0];
+    const blogToDelete = blogsAtStart[1];
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
+      .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
 
     const titles = blogsAtEnd.map((b) => b.titles);
 
